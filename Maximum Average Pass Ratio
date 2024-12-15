@@ -1,0 +1,32 @@
+class Solution {
+public:
+    double maxAverageRatio(vector<vector<int>>& classes, int extraStudents) {
+        
+        auto calculateGain = [](int pass, int total) {
+            return (double)(pass + 1) / (total + 1) - (double)pass / total;
+        };
+
+        while (extraStudents--) {
+            int bestClass = -1;
+            double maxGain = 0.0;
+
+            for (int i = 0; i < classes.size(); ++i) {
+                double gain = calculateGain(classes[i][0], classes[i][1]);
+                if (gain > maxGain) {
+                    maxGain = gain;
+                    bestClass = i;
+                }
+            }
+
+            ++classes[bestClass][0];
+            ++classes[bestClass][1];
+        }
+
+        double totalRatio = 0.0;
+        for (const auto& c : classes) {
+            totalRatio += (double)c[0] / c[1];
+        }
+
+        return totalRatio / classes.size();
+    }
+};
