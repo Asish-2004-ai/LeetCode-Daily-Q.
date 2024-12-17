@@ -1,0 +1,42 @@
+class Solution {
+public:
+    string repeatLimitedString(string s, int repeatLimit) {
+
+        vector<int> freq(26, 0);
+        for (char c : s) {
+            freq[c - 'a']++;
+        }
+
+        string result;
+        int prevChar = -1; 
+
+       
+        for (int i = 25; i >= 0; --i) {
+            while (freq[i] > 0) {
+                if (prevChar == i) {
+                    int nextChar = -1;
+                    for (int j = i - 1; j >= 0; --j) {
+                        if (freq[j] > 0) {
+                            nextChar = j;
+                            break;
+                        }
+                    }
+
+                    if (nextChar == -1) {
+                        return result;
+                    }
+                    result += ('a' + nextChar);
+                    freq[nextChar]--;
+                    prevChar = nextChar;
+                } else {
+                    int insertCount = min(freq[i], repeatLimit);
+                    result.append(insertCount, 'a' + i);
+                    freq[i] -= insertCount;
+                    prevChar = i;
+                }
+            }
+        }
+
+        return result;
+    }
+};
