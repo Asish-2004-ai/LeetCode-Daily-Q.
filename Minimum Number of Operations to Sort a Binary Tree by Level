@@ -1,0 +1,68 @@
+class Solution {
+public:
+    int minimumOperations(TreeNode* root) {
+        if (!root) return 0;
+        
+        queue<TreeNode*> q;
+        q.push(root);
+        vector<vector<int>> levels;
+        
+        while (!q.empty()) {
+            int size = q.size();
+            vector<int> currentLevel;
+            
+            for (int i = 0; i < size; ++i) {
+                TreeNode* node = q.front();
+                q.pop();
+                currentLevel.push_back(node->val);
+                
+                if (node->left) q.push(node->left);
+                if (node->right) q.push(node->right);
+            }
+            
+            levels.push_back(currentLevel);
+        }
+        
+        int totalOperations = 0;
+        
+        for (auto& level : levels) {
+            totalOperations += countMinSwapsToSort(level);
+        }
+        
+        return totalOperations;
+    }
+    
+private:
+    int countMinSwapsToSort(vector<int>& nums) {
+        int n = nums.size();
+        vector<pair<int, int>> arr(n);
+        
+        for (int i = 0; i < n; ++i) {
+            arr[i] = {nums[i], i};
+        }
+        
+        sort(arr.begin(), arr.end());
+        
+        vector<bool> visited(n, false);
+        int swaps = 0;
+        
+        for (int i = 0; i < n; ++i) {
+            if (visited[i] || arr[i].second == i) continue;
+            
+            int cycleSize = 0;
+            int j = i;
+            
+            while (!visited[j]) {
+                visited[j] = true;
+                j = arr[j].second;
+                ++cycleSize;
+            }
+            
+            if (cycleSize > 1) {
+                swaps += (cycleSize - 1);
+            }
+        }
+        
+        return swaps;
+    }
+};
