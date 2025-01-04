@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int countPalindromicSubsequence(string s) {
+        int n = s.size();
+        vector<int> left(26, 0); 
+        vector<int> right(26, 0); 
+        
+        for (char c : s) {
+            right[c - 'a']++;
+        }
+
+        unordered_set<string> uniquePalindromes; 
+
+        for (int i = 0; i < n; ++i) {
+            right[s[i] - 'a']--; 
+
+            for (char c = 'a'; c <= 'z'; ++c) {
+                if (left[c - 'a'] > 0 && right[c - 'a'] > 0) {
+                    string palindrome = string(1, c) + s[i] + string(1, c);
+                    uniquePalindromes.insert(palindrome);
+                }
+            }
+
+            left[s[i] - 'a']++;
+        }
+
+        return uniquePalindromes.size();
+    }
+};
